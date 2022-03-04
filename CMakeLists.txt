@@ -4,7 +4,7 @@ project(dl_plugin)
 
 # PYTHON
 if(NOT PYTHON_EXECUTABLE)
-    find_package(Python 3.6 COMPONENTS Interpreter REQUIRED)
+    find_package(Python 3.6 EXACT COMPONENTS Interpreter REQUIRED)
     set(PY_EXE ${Python_EXECUTABLE})
 else()
     set(PY_EXE ${PYTHON_EXECUTABLE})
