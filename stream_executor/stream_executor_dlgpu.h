@@ -36,15 +36,15 @@ namespace stream_executor {
 namespace dlgpu {
 
 constexpr int kDeviceCount = 2;
-constexpr char kDeviceName[] = "MY_DEVICE";
+constexpr char kDeviceName[] = "DLGPU";
 constexpr char kDeviceType[] = "GPU";
 
-void PopulateDefaultStreamExecutor(SP_StreamExecutor* se);
-void PopulateDefaultDeviceFns(SP_DeviceFns* device_fns);
-void PopulateDefaultTimerFns(SP_TimerFns* timer_fns);
-void PopulateDefaultPlatform(SP_Platform* platform,
+void PopulateDLStreamExecutor(SP_StreamExecutor* se);
+void PopulateDLDeviceFns(SP_DeviceFns* device_fns);
+void PopulateDLTimerFns(SP_TimerFns* timer_fns);
+void PopulateDLPlatform(SP_Platform* platform,
                              SP_PlatformFns* platform_fns);
-void PopulateDefaultPlatformRegistrationParams(
+void PopulateDLPlatformRegistrationParams(
     SE_PlatformRegistrationParams* const params);
 
 void DestroyPlatform(SP_Platform* platform);

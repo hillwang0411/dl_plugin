@@ -86,18 +86,7 @@ TF_Bool HostCallback(const SP_Device* const device, SP_Stream stream,
   return true;
 }
 
-//void MemZero(const SP_Device* device, SP_Stream stream,
-//             SP_DeviceMemoryBase* location, uint64_t size, TF_Status* status) {}
-//
-//void Memset(const SP_Device* device, SP_Stream stream,
-//            SP_DeviceMemoryBase* location, uint8_t pattern, uint64_t size,
-//            TF_Status* status) {}
-//
-//void Memset32(const SP_Device* device, SP_Stream stream,
-//              SP_DeviceMemoryBase* location, uint32_t pattern, uint64_t size,
-//              TF_Status* status) {}
-
-void PopulateDefaultStreamExecutor(SP_StreamExecutor* se) {
+void PopulateDLStreamExecutor(SP_StreamExecutor* se) {
   *se = {SP_STREAMEXECUTOR_STRUCT_SIZE};
   se->allocate = Allocate;
   se->deallocate = Deallocate;
@@ -125,19 +114,16 @@ void PopulateDefaultStreamExecutor(SP_StreamExecutor* se) {
   se->block_host_for_event = BlockHostForEvent;
   se->synchronize_all_activity = SynchronizeAllActivity;
   se->host_callback = HostCallback;
-//  se->mem_zero = MemZero;
-//  se->memset = Memset;
-//  se->memset32 = Memset32;
 }
 
-void PopulateDefaultDeviceFns(SP_DeviceFns* device_fns) {
+void PopulateDLDeviceFns(SP_DeviceFns* device_fns) {
   *device_fns = {SP_DEVICE_FNS_STRUCT_SIZE};
 }
 
 /*** Functions for creating SP_TimerFns ***/
 uint64_t Nanoseconds(SP_Timer timer) { return timer->timer_id; }
 
-void PopulateDefaultTimerFns(SP_TimerFns* timer_fns) {
+void PopulateDLTimerFns(SP_TimerFns* timer_fns) {
   timer_fns->nanoseconds = Nanoseconds;
 }
 
@@ -145,7 +131,7 @@ void PopulateDefaultTimerFns(SP_TimerFns* timer_fns) {
 void CreateTimerFns(const SP_Platform* platform, SP_TimerFns* timer_fns,
                     TF_Status* status) {
   TF_SetStatus(status, TF_OK, "");
-  PopulateDefaultTimerFns(timer_fns);
+  PopulateDLTimerFns(timer_fns);
 }
 void DestroyTimerFns(const SP_Platform* platform, SP_TimerFns* timer_fns) {}
 
@@ -153,7 +139,7 @@ void CreateStreamExecutor(const SP_Platform* platform,
                           SE_CreateStreamExecutorParams* params,
                           TF_Status* status) {
   TF_SetStatus(status, TF_OK, "");
-  PopulateDefaultStreamExecutor(params->stream_executor);
+  PopulateDLStreamExecutor(params->stream_executor);
 }
 void DestroyStreamExecutor(const SP_Platform* platform, SP_StreamExecutor* se) {
 }
@@ -176,7 +162,7 @@ void CreateDeviceFns(const SP_Platform* platform,
 }
 void DestroyDeviceFns(const SP_Platform* platform, SP_DeviceFns* device_fns) {}
 
-void PopulateDefaultPlatform(SP_Platform* platform,
+void PopulateDLPlatform(SP_Platform* platform,
                              SP_PlatformFns* platform_fns) {
   *platform = {SP_PLATFORM_STRUCT_SIZE};
   platform->name = kDeviceName;
@@ -196,9 +182,9 @@ void PopulateDefaultPlatform(SP_Platform* platform,
 void DestroyPlatform(SP_Platform* platform) {}
 void DestroyPlatformFns(SP_PlatformFns* platform_fns) {}
 
-void PopulateDefaultPlatformRegistrationParams(
+void PopulateDLPlatformRegistrationParams(
     SE_PlatformRegistrationParams* const params) {
-  PopulateDefaultPlatform(params->platform, params->platform_fns);
+  PopulateDLPlatform(params->platform, params->platform_fns);
   params->destroy_platform = DestroyPlatform;
   params->destroy_platform_fns = DestroyPlatformFns;
 }
