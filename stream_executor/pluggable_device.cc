@@ -1,4 +1,4 @@
-/* Copyright 2015 The TensorFlow Authors. All Rights Reserved.
+/* Copyright 2020 The TensorFlow Authors. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,13 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-// Common helper functions used for dealing with CUDA API datatypes.
-//
-// These are typically placed here for use by multiple source components (for
-// example, BLAS and executor components).
-#ifndef TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDA_HELPERS_H_
-#define TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDA_HELPERS_H_
+#include "tensorflow/c/experimental/stream_executor/stream_executor.h"
+#include "stream_executor/stream_executor_dlgpu.h"
 
-#include "stream_executor/gpu/gpu_helpers.h"
+extern "C" {
 
-#endif  // TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDA_HELPERS_H_
+void SE_InitPlugin(SE_PlatformRegistrationParams* const params,
+                   TF_Status* const status) {
+  stream_executor::dlgpu::PopulateDLPlatformRegistrationParams(params);
+}
+
+void TF_InitKernel() {}
+}

@@ -18,15 +18,6 @@ limitations under the License.
 #ifndef TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_TYPES_H_
 #define TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_TYPES_H_
 
-#if TENSORFLOW_USE_ROCM
-
-#define __HIP_DISABLE_CPP_FUNCTIONS__
-
-#include "rocm/include/hip/hip_complex.h"
-#include "rocm/include/hip/hip_runtime.h"
-#include "rocm/include/hiprand/hiprand.h"
-
-#else  // CUDA
 
 #include "cuComplex.h"
 #include "cuda.h"
@@ -35,32 +26,10 @@ limitations under the License.
 //   because it triggers the #error in cuda/cuda_gpu_executor.cc
 //     (because curand.h includes cuda_runtime.h)
 // so explicitly adding the lone typedef we need from that file
-typedef struct curandGenerator_st* curandGenerator_t;
-
-#endif
+//typedef struct curandGenerator_st* curandGenerator_t;
 
 namespace stream_executor {
 namespace gpu {
-
-#if TENSORFLOW_USE_ROCM
-
-using GpuStreamHandle = hipStream_t;
-using GpuEventHandle = hipEvent_t;
-using GpuFunctionHandle = hipFunction_t;
-using GpuFunctionAttribute = hipDeviceAttribute_t;  // not a typo!
-using GpuDeviceHandle = hipDevice_t;
-using GpuDevicePtr = hipDeviceptr_t;
-using GpuDeviceAttribute = hipDeviceAttribute_t;
-using GpuDeviceProperty = hipDeviceProp_t;
-using GpuModuleHandle = hipModule_t;
-using GpuStatus = hipError_t;
-using GpuFuncCachePreference = hipFuncCache_t;
-using GpuSharedMemConfig = hipSharedMemConfig;
-using GpuComplexType = hipComplex;
-using GpuDoubleComplexType = hipDoubleComplex;
-using GpuRngHandle = hiprandGenerator_t;
-
-#else  // CUDA
 
 using GpuStreamHandle = CUstream;
 using GpuEventHandle = CUevent;
@@ -74,11 +43,9 @@ using GpuModuleHandle = CUmodule;
 using GpuStatus = CUresult;
 using GpuFuncCachePreference = CUfunc_cache;
 using GpuSharedMemConfig = CUsharedconfig;
-using GpuComplexType = cuComplex;
-using GpuDoubleComplexType = cuDoubleComplex;
-using GpuRngHandle = curandGenerator_t;
-
-#endif
+//using GpuComplexType = cuComplex;
+//using GpuDoubleComplexType = cuDoubleComplex;
+//using GpuRngHandle = curandGenerator_t;
 
 }  // namespace gpu
 }  // namespace stream_executor

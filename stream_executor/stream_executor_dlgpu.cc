@@ -163,7 +163,7 @@ void CreateDeviceFns(const SP_Platform* platform,
 void DestroyDeviceFns(const SP_Platform* platform, SP_DeviceFns* device_fns) {}
 
 void PopulateDLPlatform(SP_Platform* platform,
-                             SP_PlatformFns* platform_fns) {
+                        SP_PlatformFns* platform_fns) {
   *platform = {SP_PLATFORM_STRUCT_SIZE};
   platform->name = kDeviceName;
   platform->type = kDeviceType;
