@@ -15,6 +15,8 @@ limitations under the License.
 #ifndef STREAM_EXECUTOR_STREAM_EXECUTOR_DLGPU_H_
 #define STREAM_EXECUTOR_STREAM_EXECUTOR_DLGPU_H_
 
+#include "stream_executor/cuda/cuda_platform.h"
+
 #include "tensorflow/c/experimental/stream_executor/stream_executor.h"
 
 struct SP_Stream_st {
@@ -49,6 +51,22 @@ void PopulateDLPlatformRegistrationParams(
 
 void DestroyPlatform(SP_Platform* platform);
 void DestroyPlatformFns(SP_PlatformFns* platform_fns);
+
+class DLGpuPlugin {
+  public:
+   static DLGpuPlugin& getInstance() {
+     static DLGpuPlugin instance;
+     return instance;
+   }
+
+   gpu::CudaPlatform* getPlatform() { return platform_.get(); }
+  private:
+   explicit DLGpuPlugin();
+   ~DLGpuPlugin() = default;
+   DLGpuPlugin(const DLGpuPlugin&) = delete;
+   DLGpuPlugin& operator=(const DLGpuPlugin&) = delete;
+   std::unique_ptr<gpu::CudaPlatform> platform_;
+};
 
 }  // namespace dlgpu
 }  // namespace stream_executor

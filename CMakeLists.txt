@@ -40,7 +40,8 @@ include(cmake/Modules/CUDA.cmake)
 
 include_directories(SYSTEM ${Tensorflow_INCLUDE_DIRS})
 include_directories("${PROJECT_SOURCE_DIR}/")
-file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/*.cc)
+file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/pluggable_device.cc
+                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/stream_executor_dlgpu.cc)
 add_library(dl_plugin ${dl_plugin_files})
 
 target_link_libraries(dl_plugin ${Tensorflow_LIBRARIES})

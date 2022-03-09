@@ -13,11 +13,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 #include "stream_executor_dlgpu.h"
+#include "stream_executor/cuda/cuda_platform.h"
 
 #include "tensorflow/c/experimental/stream_executor/stream_executor.h"
+#include "tensorflow/core/platform/logging.h"
 
 namespace stream_executor {
 namespace dlgpu {
+
+/*** Init dlgpu platform ***/
+DLGpuPlugin::DLGpuPlugin()
+  :platform_(new gpu::CudaPlatform) {}
 
 /*** Functions for creating SP_StreamExecutor ***/
 void Allocate(const SP_Device* const device, uint64_t size,
@@ -117,46 +123,61 @@ void PopulateDLStreamExecutor(SP_StreamExecutor* se) {
 }
 
 void PopulateDLDeviceFns(SP_DeviceFns* device_fns) {
+  LOG(ERROR) << __func__;
   *device_fns = {SP_DEVICE_FNS_STRUCT_SIZE};
 }
 
 /*** Functions for creating SP_TimerFns ***/
-uint64_t Nanoseconds(SP_Timer timer) { return timer->timer_id; }
+uint64_t Nanoseconds(SP_Timer timer) { 
+  LOG(ERROR) << __func__;
+  return timer->timer_id;
+}
 
 void PopulateDLTimerFns(SP_TimerFns* timer_fns) {
+  LOG(ERROR) << __func__;
   timer_fns->nanoseconds = Nanoseconds;
 }
 
 /*** Functions for creating SP_Platform ***/
 void CreateTimerFns(const SP_Platform* platform, SP_TimerFns* timer_fns,
                     TF_Status* status) {
+  LOG(ERROR) << __func__;
   TF_SetStatus(status, TF_OK, "");
   PopulateDLTimerFns(timer_fns);
 }
-void DestroyTimerFns(const SP_Platform* platform, SP_TimerFns* timer_fns) {}
+void DestroyTimerFns(const SP_Platform* platform, SP_TimerFns* timer_fns) {
+  LOG(ERROR) << __func__;
+}
 
 void CreateStreamExecutor(const SP_Platform* platform,
                           SE_CreateStreamExecutorParams* params,
                           TF_Status* status) {
+  LOG(ERROR) << __func__;
   TF_SetStatus(status, TF_OK, "");
   PopulateDLStreamExecutor(params->stream_executor);
 }
 void DestroyStreamExecutor(const SP_Platform* platform, SP_StreamExecutor* se) {
+  LOG(ERROR) << __func__;
 }
 void GetDeviceCount(const SP_Platform* platform, int* device_count,
                     TF_Status* status) {
   TF_SetStatus(status, TF_OK, "");
-  *device_count = kDeviceCount;
+  *device_count = DLGpuPlugin::getInstance().getPlatform()->VisibleDeviceCount();
+  LOG(ERROR) << __func__ << " " << *device_count;
 }
 void CreateDevice(const SP_Platform* platform, SE_CreateDeviceParams* params,
                   TF_Status* status) {
+  LOG(ERROR) << __func__;
   TF_SetStatus(status, TF_OK, "");
   params->device->struct_size = {SP_DEVICE_STRUCT_SIZE};
 }
-void DestroyDevice(const SP_Platform* platform, SP_Device* device) {}
+void DestroyDevice(const SP_Platform* platform, SP_Device* device) {
+  LOG(ERROR) << __func__;
+}
 
 void CreateDeviceFns(const SP_Platform* platform,
                      SE_CreateDeviceFnsParams* params, TF_Status* status) {
+  LOG(ERROR) << __func__;
   TF_SetStatus(status, TF_OK, "");
   params->device_fns->struct_size = {SP_DEVICE_FNS_STRUCT_SIZE};
 }
@@ -164,9 +185,12 @@ void DestroyDeviceFns(const SP_Platform* platform, SP_DeviceFns* device_fns) {}
 
 void PopulateDLPlatform(SP_Platform* platform,
                         SP_PlatformFns* platform_fns) {
+  LOG(ERROR) << __func__;
   *platform = {SP_PLATFORM_STRUCT_SIZE};
   platform->name = kDeviceName;
   platform->type = kDeviceType;
+  platform->supports_unified_memory = 0;
+  platform->use_bfc_allocator = 1;
   platform_fns->get_device_count = GetDeviceCount;
   platform_fns->create_device = CreateDevice;
   platform_fns->destroy_device = DestroyDevice;
@@ -179,11 +203,16 @@ void PopulateDLPlatform(SP_Platform* platform,
 }
 
 /*** Functions for creating SE_PlatformRegistrationParams ***/
-void DestroyPlatform(SP_Platform* platform) {}
-void DestroyPlatformFns(SP_PlatformFns* platform_fns) {}
+void DestroyPlatform(SP_Platform* platform) {
+  LOG(ERROR) << __func__;
+}
+void DestroyPlatformFns(SP_PlatformFns* platform_fns) {
+  LOG(ERROR) << __func__;
+}
 
 void PopulateDLPlatformRegistrationParams(
     SE_PlatformRegistrationParams* const params) {
+  LOG(ERROR) << __func__;
   PopulateDLPlatform(params->platform, params->platform_fns);
   params->destroy_platform = DestroyPlatform;
   params->destroy_platform_fns = DestroyPlatformFns;
