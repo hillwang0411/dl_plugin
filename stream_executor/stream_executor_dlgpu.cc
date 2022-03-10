@@ -17,6 +17,7 @@ limitations under the License.
 
 #include "tensorflow/c/experimental/stream_executor/stream_executor.h"
 #include "tensorflow/core/platform/logging.h"
+#include "tensorflow/stream_executor/lib/error.h"
 
 namespace stream_executor {
 namespace dlgpu {
@@ -170,6 +171,12 @@ void CreateDevice(const SP_Platform* platform, SE_CreateDeviceParams* params,
   LOG(ERROR) << __func__;
   TF_SetStatus(status, TF_OK, "");
   params->device->struct_size = {SP_DEVICE_STRUCT_SIZE};
+  auto executor = DLGpuPlugin::getInstance().getPlatform()->ExecutorForDevice(params->ordinal).ValueOrDie();
+  params->device->device_handle = reinterpret_cast<void*>(executor);
+  string hardware("dlgpu");
+  params->device->hardware_name = hardware.c_str();
+  string vendor("DENGLING tech");
+  params->device->device_vendor = vendor.c_str();
 }
 void DestroyDevice(const SP_Platform* platform, SP_Device* device) {
   LOG(ERROR) << __func__;
