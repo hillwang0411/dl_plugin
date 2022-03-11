@@ -43,7 +43,7 @@ namespace stream_executor {
 
 class StreamExecutor;
 
-namespace gpu {
+namespace dlgpu {
 
 // Pointer-to-implementation object type with virtual destruction for any XLA
 // specific data hanging off of the GpuExecutor.
@@ -405,7 +405,7 @@ inline GpuExecutor* ExtractGpuExecutor(StreamExecutor* stream_exec) {
   return static_cast<GpuExecutor*>(stream_exec->implementation());
 }
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_EXECUTOR_H_

@@ -13,21 +13,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#ifndef TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDA_PLATFORM_H_
-#define TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDA_PLATFORM_H_
+#ifndef STREAM_EXECUTOR_CUDA_CUDA_PLATFORM_H_
+#define STREAM_EXECUTOR_CUDA_CUDA_PLATFORM_H_
 
 #include <memory>
 #include <vector>
 
+#include "stream_executor/gpu/gpu_executor.h"
+
 #include "tensorflow/core/platform/thread_annotations.h"
-#include "tensorflow/stream_executor/executor_cache.h"
+//#include "tensorflow/stream_executor/executor_cache.h"
 #include "tensorflow/stream_executor/lib/statusor.h"
-#include "tensorflow/stream_executor/multi_platform_manager.h"
-#include "tensorflow/stream_executor/platform.h"
+//#include "tensorflow/stream_executor/multi_platform_manager.h"
+//#include "tensorflow/stream_executor/platform.h"
 #include "tensorflow/stream_executor/platform/port.h"
 #include "tensorflow/stream_executor/stream_executor_internal.h"
 #include "tensorflow/stream_executor/stream_executor_pimpl.h"
-#include "tensorflow/stream_executor/trace_listener.h"
+//#include "tensorflow/stream_executor/trace_listener.h"
 
 namespace stream_executor {
 namespace cuda {
@@ -37,60 +39,60 @@ namespace cuda {
 extern const Platform::Id kCudaPlatformId;
 }  // namespace cuda
 
-namespace gpu {
+namespace dlgpu {
 // Cuda-specific platform plugin, registered as a singleton value via module
 // initializer.
-class CudaPlatform : public Platform {
+class CudaPlatform {
  public:
   CudaPlatform();
-  ~CudaPlatform() override;
+  ~CudaPlatform();
 
   // CudaPlatform-specific functionality
   // Returns the number of distinct buses / NUMA nodes on the machine.
-  int BusCount();
+//  int BusCount();
 
   // Returns the bus/NUMA node for the specified device ordinal.
-  int DeviceToBus(int device_ordinal);
+//  int DeviceToBus(int device_ordinal);
 
   // Returns the lowest-ordinal-number StreamExecutor on the specified bus.
-  port::StatusOr<StreamExecutor*> FirstExecutorForBus(int bus_ordinal);
+//  port::StatusOr<StreamExecutor*> FirstExecutorForBus(int bus_ordinal);
 
   // Platform interface implementation:
   // Returns the same value as kCudaPlatform above.
-  Platform::Id id() const override;
+  Platform::Id id() const;
 
   // Returns -1 as a sentinel on internal failure (and logs the error).
-  int VisibleDeviceCount() const override;
+  int VisibleDeviceCount() const;
 
-  const std::string& Name() const override;
+  const std::string& Name() const;
 
   port::StatusOr<std::unique_ptr<DeviceDescription>> DescriptionForDevice(
-      int ordinal) const override;
+      int ordinal) const;
 
-  port::StatusOr<StreamExecutor*> ExecutorForDevice(int ordinal) override;
+  port::StatusOr<GpuExecutor*> ExecutorForDevice(int ordinal);
 
-  port::StatusOr<StreamExecutor*> ExecutorForDeviceWithPluginConfig(
-      int ordinal, const PluginConfig& config) override;
+//  port::StatusOr<StreamExecutor*> ExecutorForDeviceWithPluginConfig(
+//      int ordinal, const PluginConfig& config);
 
-  port::StatusOr<StreamExecutor*> GetExecutor(
-      const StreamExecutorConfig& config) override;
+  port::StatusOr<GpuExecutor*> GetExecutor(
+      const StreamExecutorConfig& config);
 
-  port::StatusOr<std::unique_ptr<StreamExecutor>> GetUncachedExecutor(
-      const StreamExecutorConfig& config) override;
-
-  void RegisterTraceListener(std::unique_ptr<TraceListener> listener) override;
-
-  void UnregisterTraceListener(TraceListener* listener) override;
+//  port::StatusOr<std::unique_ptr<StreamExecutor>> GetUncachedExecutor(
+//      const StreamExecutorConfig& config);
+//
+//  void RegisterTraceListener(std::unique_ptr<TraceListener> listener);
+//
+//  void UnregisterTraceListener(TraceListener* listener);
 
  private:
   // Determines the number of NUMA nodes and the assignment of executor to each.
-  void InspectNumaNodes();
+//  void InspectNumaNodes();
 
   // This platform's name.
   std::string name_;
 
   // Cache of created executors.
-  ExecutorCache executor_cache_;
+//  ExecutorCache executor_cache_;
 
   // The smallest NUMA node value for any device managed by this machine
   // manager. Used, along with limit_numa_node_, to convert NUMA nodes into bus
@@ -104,13 +106,13 @@ class CudaPlatform : public Platform {
   SE_DISALLOW_COPY_AND_ASSIGN(CudaPlatform);
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 
 namespace cuda {
 
-using CudaPlatform = gpu::CudaPlatform;
+using CudaPlatform = dlgpu::CudaPlatform;
 
 }  // namespace cuda
 }  // namespace stream_executor
 
-#endif  // TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDA_PLATFORM_H_
+#endif  // STREAM_EXECUTOR_CUDA_CUDA_PLATFORM_H_

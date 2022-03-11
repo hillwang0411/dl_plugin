@@ -21,7 +21,7 @@ limitations under the License.
 #include "stream_executor/gpu/gpu_driver.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 // CUDAContext wraps a cuda CUcontext handle, and includes a unique id. The
 // unique id is positive, and ids are not repeated within the process.
 class GpuContext {
@@ -42,17 +42,17 @@ class GpuContext {
   const int64 id_;
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 
 namespace cuda {
 
-using MemorySpace = gpu::MemorySpace;
+using MemorySpace = dlgpu::MemorySpace;
 
-using CUDADriver = gpu::GpuDriver;
+using CUDADriver = dlgpu::GpuDriver;
 
-using ScopedActivateContext = gpu::ScopedActivateContext;
+using ScopedActivateContext = dlgpu::ScopedActivateContext;
 
-using CudaContext = gpu::GpuContext;
+using CudaContext = dlgpu::GpuContext;
 
 // Returns the current context set in CUDA. This is done by calling the cuda
 // driver (e.g., this value is not our cached view of the current context).

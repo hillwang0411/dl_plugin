@@ -29,7 +29,7 @@ limitations under the License.
 //typedef struct curandGenerator_st* curandGenerator_t;
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 using GpuStreamHandle = CUstream;
 using GpuEventHandle = CUevent;
@@ -47,7 +47,7 @@ using GpuSharedMemConfig = CUsharedconfig;
 //using GpuDoubleComplexType = cuDoubleComplex;
 //using GpuRngHandle = curandGenerator_t;
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_TYPES_H_

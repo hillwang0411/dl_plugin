@@ -18,17 +18,24 @@ limitations under the License.
 #include "tensorflow/c/experimental/stream_executor/stream_executor.h"
 #include "tensorflow/core/platform/logging.h"
 #include "tensorflow/stream_executor/lib/error.h"
+#include "tensorflow/stream_executor/stream_executor_pimpl.h"
 
 namespace stream_executor {
 namespace dlgpu {
 
 /*** Init dlgpu platform ***/
 DLGpuPlugin::DLGpuPlugin()
-  :platform_(new gpu::CudaPlatform) {}
+  :platform_(new CudaPlatform) {}
 
 /*** Functions for creating SP_StreamExecutor ***/
 void Allocate(const SP_Device* const device, uint64_t size,
-              int64_t memory_space, SP_DeviceMemoryBase* const mem) {}
+              int64_t memory_space, SP_DeviceMemoryBase* const mem) {
+//  auto executor = reinterpret_cast<stream_executor::StreamExecutor*>(device->device_handle);
+//  auto buf = executor->Allocate(size, 0/*memory_space*/);
+//  mem->opaque = buf.opaque();
+//  mem->size = size;
+//  mem->payload = 0;
+}
 void Deallocate(const SP_Device* const device, SP_DeviceMemoryBase* const mem) {
 }
 void* HostMemoryAllocate(const SP_Device* const device, uint64_t size) {

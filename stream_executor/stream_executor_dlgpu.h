@@ -59,13 +59,13 @@ class DLGpuPlugin {
      return instance;
    }
 
-   gpu::CudaPlatform* getPlatform() { return platform_.get(); }
+   CudaPlatform* getPlatform() { return platform_.get(); }
   private:
    explicit DLGpuPlugin();
    ~DLGpuPlugin() = default;
    DLGpuPlugin(const DLGpuPlugin&) = delete;
    DLGpuPlugin& operator=(const DLGpuPlugin&) = delete;
-   std::unique_ptr<gpu::CudaPlatform> platform_;
+   std::unique_ptr<CudaPlatform> platform_;
 };
 
 }  // namespace dlgpu

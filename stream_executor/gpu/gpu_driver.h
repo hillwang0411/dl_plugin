@@ -27,7 +27,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/platform/port.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 // Identifies the memory space where an allocation resides. See
 // GpuDriver::GetPointerMemorySpace().
@@ -596,7 +596,7 @@ class ScopedActivateContext {
   GpuContext* to_restore_ = nullptr;
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_DRIVER_H_

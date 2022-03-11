@@ -29,7 +29,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/stream_executor_internal.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 // Wraps a GpuFunctionHandle to implement the platform-independent
 // KernelInterface.
@@ -99,7 +99,7 @@ inline GpuKernel* AsGpuKernel(KernelBase* kernel) {
   return static_cast<GpuKernel*>(kernel->implementation());
 }
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_KERNEL_H_
