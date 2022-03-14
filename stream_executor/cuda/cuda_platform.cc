@@ -68,7 +68,7 @@ const DeviceOptions GetDeviceOptionsFromEnv() {
 }  // namespace
 
 CudaPlatform::CudaPlatform()
-    : name_("DLCUDA"), min_numa_node_(0), limit_numa_node_(0) {}
+    : name_("DLGPU"), vendor_("DENGLING tech"), min_numa_node_(0), limit_numa_node_(0) {}
 
 CudaPlatform::~CudaPlatform() {}
 
@@ -109,12 +109,10 @@ CudaPlatform::~CudaPlatform() {}
 //}
 
 //int CudaPlatform::DeviceToBus(int device_ordinal) {
-////  StreamExecutorConfig config;
-////  config.ordinal = device_ordinal;
-////  StreamExecutor* exec = GetExecutor(config).ValueOrDie();
-////  return exec->GetDeviceDescription().numa_node() - min_numa_node_;
-//  LOG(FATAL) << "not yet implemented: " << __func__;
-//  return 0;
+//  StreamExecutorConfig config;
+//  config.ordinal = device_ordinal;
+//  GpuExecutor* exec = GetExecutor(config).ValueOrDie();
+//  return exec->GetDeviceDescription().numa_node() - min_numa_node_;
 //}
 
 //port::StatusOr<StreamExecutor*> CudaPlatform::FirstExecutorForBus(

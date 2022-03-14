@@ -71,7 +71,7 @@ extern bool FLAGS_check_gpu_leaks;
 bool FLAGS_prefer_cubin_to_ptx = true;
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 // Hook that can be used to CUBIN-ate PTX before it is loaded into the driver.
 // It has been observed that loading both PTX and cubins into the driver library
@@ -1081,7 +1081,19 @@ GpuExecutor::CreateDeviceDescription(int device_ordinal) {
   return builder.Build();
 }
 
-}  // namespace gpu
+// TODO: add new interface here.
+std::string GpuExecutor::GetPCIBusID(int device_ordinal) {
+  if (pci_bus_id_.empty()) {
+    std::string pci_bus_id = GpuDriver::GetPCIBusID(device);
+
+    // Lower the hex characters to match sysfs.
+    pci_bus_id_ = absl::AsciiStrToLower(pci_bus_id);
+  }
+
+  return pci_bus_id_;
+}
+
+}  // namespace dlgpu
 
 }  // namespace stream_executor
 

@@ -20,7 +20,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/stream.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 bool GpuStream::Init() {
   if (!GpuDriver::CreateStream(parent_->gpu_context(), &gpu_stream_,
@@ -58,5 +58,5 @@ GpuStreamHandle AsGpuStreamValue(Stream* stream) {
   return AsGpuStream(stream)->gpu_stream();
 }
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor

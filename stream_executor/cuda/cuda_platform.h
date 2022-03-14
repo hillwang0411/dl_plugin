@@ -66,6 +66,8 @@ class CudaPlatform {
 
   const std::string& Name() const;
 
+  const std::string& Vendor() const;
+
   port::StatusOr<std::unique_ptr<DeviceDescription>> DescriptionForDevice(
       int ordinal) const;
 
@@ -90,6 +92,9 @@ class CudaPlatform {
 
   // This platform's name.
   std::string name_;
+
+  // This platform's vendor.
+  std::string vendor_;
 
   // Cache of created executors.
 //  ExecutorCache executor_cache_;

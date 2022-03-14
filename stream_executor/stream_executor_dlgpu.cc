@@ -130,9 +130,21 @@ void PopulateDLStreamExecutor(SP_StreamExecutor* se) {
   se->host_callback = HostCallback;
 }
 
+int32_t get_numa_node(const SP_Device* device) {
+}
+
+int64_t get_memory_bandwidth(const SP_Device* device) {
+}
+
+double get_gflops(const SP_Device* device) {
+}
+
 void PopulateDLDeviceFns(SP_DeviceFns* device_fns) {
   LOG(ERROR) << __func__;
   *device_fns = {SP_DEVICE_FNS_STRUCT_SIZE};
+  device_fns->get_numa_node = get_numa_node;
+  device_fns->get_memory_bandwidth = get_memory_bandwidth;
+  device_fns->get_gflops = get_gflops;
 }
 
 /*** Functions for creating SP_TimerFns ***/
@@ -180,13 +192,17 @@ void CreateDevice(const SP_Platform* platform, SE_CreateDeviceParams* params,
   params->device->struct_size = {SP_DEVICE_STRUCT_SIZE};
   auto executor = DLGpuPlugin::getInstance().getPlatform()->ExecutorForDevice(params->ordinal).ValueOrDie();
   params->device->device_handle = reinterpret_cast<void*>(executor);
-  string hardware("dlgpu");
-  params->device->hardware_name = hardware.c_str();
-  string vendor("DENGLING tech");
-  params->device->device_vendor = vendor.c_str();
+//  string hardware("dlgpu");
+  params->device->hardware_name = DLGpuPlugin::getInstance().getPlatform()->Name().c_str();
+//  string vendor("DENGLING tech");
+  params->device->device_vendor = DLGpuPlugin::getInstance().getPlatform()->Vendor().c_str();
+  //TODO:fix it.
+  params->device->pci_bus_id = executor->GetPCIBusID(params->ordinal).c_str(); 
 }
 void DestroyDevice(const SP_Platform* platform, SP_Device* device) {
   LOG(ERROR) << __func__;
+  auto executor = reinterpret_cast<GpuExecutor*>(device->device_handle);
+  delete executor;
 }
 
 void CreateDeviceFns(const SP_Platform* platform,

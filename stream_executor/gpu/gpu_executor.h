@@ -291,6 +291,9 @@ class GpuExecutor : public internal::StreamExecutorInterface {
     return xla_state_.getOrCreate<T>(se);
   }
 
+  // TODO:Add new interface here.
+  std::string GetPCIBusID(int device_ordinal);
+
  private:
   // Attempts to find a more specific version of the file indicated by
   // filename by looking for compute-capability-specific suffixed versions; i.e.
@@ -397,6 +400,9 @@ class GpuExecutor : public internal::StreamExecutorInterface {
 
   // Type erased XLA specific state attached to GpuExecutor.
   Object xla_state_;
+
+  // TODO: add member here
+  std::string pci_bus_id_;
 
   SE_DISALLOW_COPY_AND_ASSIGN(GpuExecutor);
 };
