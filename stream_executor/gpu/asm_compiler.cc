@@ -141,12 +141,12 @@ port::StatusOr<absl::Span<const uint8>> CompileGpuAsmOrGetCached(
 port::StatusOr<std::vector<uint8>> CompileGpuAsm(int device_ordinal,
                                                  const char* ptx_contents,
                                                  GpuAsmOpts options) {
-  gpu::GpuDeviceHandle handle;
-  TF_RETURN_IF_ERROR(gpu::GpuDriver::GetDevice(device_ordinal, &handle));
+  dlgpu::GpuDeviceHandle handle;
+  TF_RETURN_IF_ERROR(dlgpu::GpuDriver::GetDevice(device_ordinal, &handle));
   int cc_major;
   int cc_minor;
   TF_RETURN_IF_ERROR(
-      gpu::GpuDriver::GetComputeCapability(&cc_major, &cc_minor, handle));
+      dlgpu::GpuDriver::GetComputeCapability(&cc_major, &cc_minor, handle));
   return CompileGpuAsm(cc_major, cc_minor, ptx_contents, options);
 }
 

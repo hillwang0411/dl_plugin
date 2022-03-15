@@ -23,7 +23,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/platform/port.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 // e.g. DriverVersion{346, 3, 4}
 using DriverVersion = std::tuple<int, int, int>;
@@ -93,7 +93,7 @@ class Diagnostician {
   SE_DISALLOW_COPY_AND_ASSIGN(Diagnostician);
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_DIAGNOSTICS_H_

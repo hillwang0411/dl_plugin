@@ -112,7 +112,7 @@ port::StatusOr<DriverVersion> StringToDriverVersion(const std::string &value) {
 }  // namespace stream_executor
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 #ifdef __APPLE__
 static const CFStringRef kDriverKextIdentifier = CFSTR("com.nvidia.CUDA");
@@ -394,5 +394,5 @@ port::StatusOr<DriverVersion> Diagnostician::FindKernelDriverVersion() {
 #endif
 }
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor

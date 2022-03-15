@@ -21,7 +21,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/stream_executor_internal.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 GpuContext* ExtractGpuContext(GpuExecutor* gpu_exec);
 
@@ -44,5 +44,5 @@ ScopedActivateExecutorContext::ScopedActivateExecutorContext(
   other.driver_scoped_activate_context_ = nullptr;
 }
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor

@@ -21,7 +21,7 @@ limitations under the License.
 namespace stream_executor {
 namespace cuda {
 
-using CUDAEvent = gpu::GpuEvent;
+using CUDAEvent = dlgpu::GpuEvent;
 
 }  // namespace cuda
 }  // namespace stream_executor

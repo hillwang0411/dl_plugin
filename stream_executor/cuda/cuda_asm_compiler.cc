@@ -33,8 +33,8 @@ namespace stream_executor {
   } while (false)
 
 port::StatusOr<std::vector<uint8>> LinkGpuAsm(
-    gpu::GpuContext* context, std::vector<CubinOrPTXImage> images) {
-  gpu::ScopedActivateContext activation(context);
+    dlgpu::GpuContext* context, std::vector<CubinOrPTXImage> images) {
+  dlgpu::ScopedActivateContext activation(context);
 
   CUlinkState link_state;
   RETURN_IF_CUDA_ERROR(cuLinkCreate(0, nullptr, nullptr, &link_state));

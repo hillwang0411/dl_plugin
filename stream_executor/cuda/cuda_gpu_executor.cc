@@ -1084,7 +1084,7 @@ GpuExecutor::CreateDeviceDescription(int device_ordinal) {
 // TODO: add new interface here.
 std::string GpuExecutor::GetPCIBusID(int device_ordinal) {
   if (pci_bus_id_.empty()) {
-    std::string pci_bus_id = GpuDriver::GetPCIBusID(device);
+    std::string pci_bus_id = GpuDriver::GetPCIBusID(device_ordinal);
 
     // Lower the hex characters to match sysfs.
     pci_bus_id_ = absl::AsciiStrToLower(pci_bus_id);

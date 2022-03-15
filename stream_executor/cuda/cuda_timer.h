@@ -24,7 +24,7 @@ limitations under the License.
 namespace stream_executor {
 namespace cuda {
 
-using CUDATimer = gpu::GpuTimer;
+using CUDATimer = dlgpu::GpuTimer;
 
 }  // namespace cuda
 }  // namespace stream_executor

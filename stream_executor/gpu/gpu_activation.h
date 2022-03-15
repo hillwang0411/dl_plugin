@@ -29,7 +29,7 @@ namespace stream_executor {
 
 class StreamExecutor;
 
-namespace gpu {
+namespace dlgpu {
 
 class GpuExecutor;
 class ScopedActivateContext;
@@ -55,7 +55,7 @@ class ScopedActivateExecutorContext {
   SE_DISALLOW_COPY_AND_ASSIGN(ScopedActivateExecutorContext);
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_ACTIVATION_H_

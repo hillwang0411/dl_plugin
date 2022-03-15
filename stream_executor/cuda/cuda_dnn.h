@@ -27,7 +27,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/temporary_device_memory.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 class GpuExecutor;
 class CudnnRnnDescriptor;
@@ -746,7 +746,7 @@ class CudnnSupport : public dnn::DnnSupport {
   SE_DISALLOW_COPY_AND_ASSIGN(CudnnSupport);
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDA_DNN_H_

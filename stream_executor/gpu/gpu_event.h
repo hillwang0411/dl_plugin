@@ -22,7 +22,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/lib/status.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 // GpuEvent wraps a GpuEventHandle in the platform-independent EventInterface
 // interface.
@@ -56,7 +56,7 @@ class GpuEvent : public internal::EventInterface {
   GpuEventHandle gpu_event_;
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_EVENT_H_

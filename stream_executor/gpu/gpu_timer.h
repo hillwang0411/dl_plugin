@@ -24,7 +24,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/stream_executor_internal.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 class GpuExecutor;
 class GpuStream;
@@ -84,7 +84,7 @@ struct GpuTimerDeleter {
   }
 };
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_GPU_GPU_TIMER_H_

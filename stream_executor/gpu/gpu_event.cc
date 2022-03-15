@@ -20,7 +20,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/lib/statusor.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 GpuEvent::GpuEvent(GpuExecutor* parent)
     : parent_(parent), gpu_event_(nullptr) {}
@@ -43,5 +43,5 @@ port::Status GpuEvent::Record(GpuStream* stream) {
 
 GpuEventHandle GpuEvent::gpu_event() { return gpu_event_; }
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor

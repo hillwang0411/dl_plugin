@@ -18,7 +18,7 @@ limitations under the License.
 #include "tensorflow/core/platform/test.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 namespace {
 
 TEST(CuDNNVersion, ToString) {

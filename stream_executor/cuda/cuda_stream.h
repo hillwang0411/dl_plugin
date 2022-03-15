@@ -24,10 +24,10 @@ limitations under the License.
 namespace stream_executor {
 namespace cuda {
 
-using CUDAStream = gpu::GpuStream;
+using CUDAStream = dlgpu::GpuStream;
 
 inline CUDAStream* AsCUDAStream(Stream* stream) {
-  return gpu::AsGpuStream(stream);
+  return dlgpu::AsGpuStream(stream);
 }
 
 }  // namespace cuda

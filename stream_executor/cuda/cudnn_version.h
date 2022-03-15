@@ -21,7 +21,7 @@ limitations under the License.
 #include "absl/strings/str_cat.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 struct CudnnVersion {
   CudnnVersion() = default;
@@ -43,7 +43,7 @@ struct CudnnVersion {
 bool IsSourceCompatibleWithCudnnLibrary(CudnnVersion source_version,
                                         CudnnVersion loaded_version);
 
-}  // namespace gpu
+}  // namespace dlgpu
 }  // namespace stream_executor
 
 #endif  // TENSORFLOW_STREAM_EXECUTOR_CUDA_CUDNN_VERSION_H_

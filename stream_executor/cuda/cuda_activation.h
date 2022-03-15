@@ -31,7 +31,7 @@ class StreamExecutor;
 
 namespace cuda {
 
-using ScopedActivateExecutorContext = gpu::ScopedActivateExecutorContext;
+using ScopedActivateExecutorContext = dlgpu::ScopedActivateExecutorContext;
 
 }  // namespace cuda
 }  // namespace stream_executor

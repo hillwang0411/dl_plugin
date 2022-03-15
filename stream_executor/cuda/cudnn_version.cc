@@ -16,7 +16,7 @@ limitations under the License.
 #include "stream_executor/cuda/cudnn_version.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 bool IsSourceCompatibleWithCudnnLibrary(CudnnVersion source_version,
                                         CudnnVersion loaded_version) {

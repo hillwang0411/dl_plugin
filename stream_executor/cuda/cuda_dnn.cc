@@ -59,7 +59,7 @@ limitations under the License.
 #pragma clang diagnostic warning "-Wmismatched-tags"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 PLUGIN_REGISTRY_DEFINE_PLUGIN_ID(kCuDnnPlugin);
 
@@ -158,7 +158,7 @@ class CudnnHandle {
  public:
   // Takes ownership of the executor context and the lock to access cuDNN
   // using handle.
-  CudnnHandle(gpu::ScopedActivateExecutorContext context,
+  CudnnHandle(dlgpu::ScopedActivateExecutorContext context,
               std::unique_ptr<absl::MutexLock> lock, cudnnHandle_t handle)
       : context_(std::move(context)), lock_(std::move(lock)), handle_(handle) {}
 
@@ -167,7 +167,7 @@ class CudnnHandle {
   cudnnHandle_t handle() const { return handle_; }
 
  private:
-  gpu::ScopedActivateExecutorContext context_;
+  dlgpu::ScopedActivateExecutorContext context_;
   std::unique_ptr<absl::MutexLock> lock_;
   cudnnHandle_t handle_;  // Not owned.
 };
@@ -208,7 +208,7 @@ class CudnnAccess {
   CudnnHandle GetHandle(GpuExecutor* executor, Stream* stream) {
     auto lock = absl::make_unique<absl::MutexLock>(&mutex_);
     mutex_.AssertHeld();
-    gpu::ScopedActivateExecutorContext context(executor);
+    dlgpu::ScopedActivateExecutorContext context(executor);
     CUstream cu_stream = stream ? AsGpuStreamValue(stream) : cudaStreamLegacy;
     const auto status = cudnnSetStream(handle_, cu_stream);
     CHECK_EQ(status, CUDNN_STATUS_SUCCESS) << "Failed to set cuDNN stream.";
@@ -363,7 +363,7 @@ port::Status CudnnSupport::Init() {
   CHECK_EQ(cudnn_handle, nullptr);
   LOG(ERROR) << "Could not create cudnn handle: " << ToString(status);
   if (status == CUDNN_STATUS_NOT_INITIALIZED) {
-    auto result = gpu::Diagnostician::FindKernelDriverVersion();
+    auto result = dlgpu::Diagnostician::FindKernelDriverVersion();
     if (!result.ok()) {
       LOG(ERROR) << "Error retrieving driver version: "
                  << cuda::DriverVersionStatusToString(result);
@@ -1080,7 +1080,7 @@ class CudnnRnnParamsDescriptor {
 }  // namespace
 
 class CudnnRnnDescriptor : public dnn::RnnDescriptor {
-  CudnnRnnDescriptor(const CudnnHandle& cudnn, gpu::RnnDescriptor rnn_desc,
+  CudnnRnnDescriptor(const CudnnHandle& cudnn, dlgpu::RnnDescriptor rnn_desc,
                      PersistentRnnPlan rnn_plan, int num_layers,
                      int hidden_size, int input_size, int cell_size,
                      int batch_size, cudnnRNNInputMode_t input_mode,
@@ -1121,7 +1121,7 @@ class CudnnRnnDescriptor : public dnn::RnnDescriptor {
         CudnnDropoutDescriptor dropout_desc,
         CudnnDropoutDescriptor::Create(cudnn, dropout, seed, state_allocator));
 
-    gpu::RnnDescriptor rnn_desc = CreateRnnDescriptor();
+    dlgpu::RnnDescriptor rnn_desc = CreateRnnDescriptor();
     cudnnRNNAlgo_t rnn_algo = ToCudnnRNNAlgo(algorithm_config.algorithm());
 
     // TODO: allow the user to choose an algorithm.
@@ -1254,7 +1254,7 @@ class CudnnRnnDescriptor : public dnn::RnnDescriptor {
   }
 
  private:
-  gpu::RnnDescriptor rnn_desc_;
+  dlgpu::RnnDescriptor rnn_desc_;
   PersistentRnnPlan rnn_plan_;
   int num_layers_;
   int hidden_size_;
@@ -5324,22 +5324,22 @@ bool CudnnSupport::DeriveOutputBatchDescriptor(
   return IsStatusOk(status, /*report_error=*/true);
 }
 
-}  // namespace gpu
+}  // namespace dlgpu
 
 void initialize_cudnn() {
   port::Status status =
       PluginRegistry::Instance()->RegisterFactory<PluginRegistry::DnnFactory>(
-          cuda::kCudaPlatformId, gpu::kCuDnnPlugin, "cuDNN",
+          cuda::kCudaPlatformId, dlgpu::kCuDnnPlugin, "cuDNN",
           [](internal::StreamExecutorInterface* parent) -> dnn::DnnSupport* {
-            gpu::GpuExecutor* cuda_executor =
-                dynamic_cast<gpu::GpuExecutor*>(parent);
+            dlgpu::GpuExecutor* cuda_executor =
+                dynamic_cast<dlgpu::GpuExecutor*>(parent);
             if (cuda_executor == nullptr) {
               LOG(ERROR) << "Attempting to initialize an instance of the cuDNN "
                          << "support library with a non-CUDA StreamExecutor";
               return nullptr;
             }
 
-            gpu::CudnnSupport* dnn = new gpu::CudnnSupport(cuda_executor);
+            dlgpu::CudnnSupport* dnn = new dlgpu::CudnnSupport(cuda_executor);
             if (!dnn->Init().ok()) {
               // Note: Init() will log a more specific error.
               delete dnn;
@@ -5354,7 +5354,7 @@ void initialize_cudnn() {
   }
 
   PluginRegistry::Instance()->SetDefaultFactory(
-      cuda::kCudaPlatformId, PluginKind::kDnn, gpu::kCuDnnPlugin);
+      cuda::kCudaPlatformId, PluginKind::kDnn, dlgpu::kCuDnnPlugin);
 }
 
 }  // namespace stream_executor

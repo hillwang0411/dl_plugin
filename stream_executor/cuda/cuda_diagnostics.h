@@ -22,7 +22,7 @@ namespace stream_executor {
 namespace cuda {
 
 // e.g. DriverVersion{346, 3, 4}
-using DriverVersion = gpu::DriverVersion;
+using DriverVersion = dlgpu::DriverVersion;
 
 // Converts a parsed driver version to string form.
 std::string DriverVersionToString(DriverVersion version);
@@ -33,7 +33,7 @@ std::string DriverVersionStatusToString(port::StatusOr<DriverVersion> version);
 // Converts a string of a form like "331.79" to a DriverVersion{331, 79}.
 port::StatusOr<DriverVersion> StringToDriverVersion(const std::string& value);
 
-using Diagnostician = gpu::Diagnostician;
+using Diagnostician = dlgpu::Diagnostician;
 
 }  // namespace cuda
 }  // namespace stream_executor

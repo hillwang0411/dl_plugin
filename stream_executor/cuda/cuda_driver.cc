@@ -51,7 +51,7 @@ bool FLAGS_gpuexec_cuda_device_0_only = false;
     CUresult _res = (expr);                                            \
     if (TF_PREDICT_FALSE(_res != CUDA_SUCCESS)) {                      \
       return port::InternalError(absl::StrCat(                         \
-          __VA_ARGS__, ": ", ::stream_executor::gpu::ToString(_res))); \
+          __VA_ARGS__, ": ", ::stream_executor::dlgpu::ToString(_res))); \
     }                                                                  \
   } while (0)
 
@@ -60,7 +60,7 @@ bool FLAGS_gpuexec_cuda_device_0_only = false;
     CUresult _res = (expr);                                 \
     if (TF_PREDICT_FALSE(_res != CUDA_SUCCESS)) {           \
       LOG(FATAL) << absl::StrCat(__VA_ARGS__) << ": "       \
-                 << ::stream_executor::gpu::ToString(_res); \
+                 << ::stream_executor::dlgpu::ToString(_res); \
     }                                                       \
   } while (0)
 
@@ -69,7 +69,7 @@ bool FLAGS_gpuexec_cuda_device_0_only = false;
 constexpr bool kVerifyGpuContext = false;
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 namespace {
 
 // Manages the singleton map of contexts that we've created, mapping
@@ -1633,7 +1633,7 @@ static port::StatusOr<T> GetSimpleAttribute(CUdevice device,
   return max_blocks;
 }
 
-}  // namespace gpu
+}  // namespace dlgpu
 
 namespace cuda {
 

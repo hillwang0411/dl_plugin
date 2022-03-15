@@ -27,7 +27,7 @@ limitations under the License.
 namespace stream_executor {
 namespace cuda {
 
-using CUDAKernel = gpu::GpuKernel;
+using CUDAKernel = dlgpu::GpuKernel;
 
 }  // namespace cuda
 }  // namespace stream_executor

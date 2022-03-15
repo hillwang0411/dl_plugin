@@ -16,7 +16,7 @@ limitations under the License.
 #include "stream_executor/cuda/cuda_kernel.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 CUfunc_cache GpuKernel::GetGpuCacheConfig() const {
   switch (preferred_cache_config_) {

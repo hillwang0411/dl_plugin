@@ -20,7 +20,7 @@ limitations under the License.
 #include "tensorflow/stream_executor/lib/statusor.h"
 
 namespace stream_executor {
-namespace gpu {
+namespace dlgpu {
 
 Event::Status GpuEvent::PollForStatus() {
   port::StatusOr<CUresult> status =
