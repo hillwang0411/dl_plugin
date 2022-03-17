@@ -15,15 +15,8 @@ limitations under the License.
 
 #include "stream_executor/cuda/cuda_gpu_executor.h"
 
-#if defined(__APPLE__)
-#include <mach-o/dyld.h>
-#endif
-#if defined(PLATFORM_WINDOWS)
-#include <windows.h>
-#define PATH_MAX MAX_PATH
-#else
 #include <unistd.h>
-#endif
+
 #include "absl/strings/ascii.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
@@ -186,20 +179,8 @@ bool GpuExecutor::FindOnDiskForISAVersion(absl::string_view filename,
 //                 would return /usr/bin.
 static std::string GetBinaryDir(bool strip_exe) {
   char exe_path[PATH_MAX] = {0};
-#if defined(__APPLE__)
-  uint32_t buffer_size = 0U;
-  _NSGetExecutablePath(nullptr, &buffer_size);
-  char unresolved_path[buffer_size];
-  _NSGetExecutablePath(unresolved_path, &buffer_size);
-  CHECK_ERR(realpath(unresolved_path, exe_path) ? 1 : -1);
-#else
-#if defined(PLATFORM_WINDOWS)
-  HMODULE hModule = GetModuleHandle(NULL);
-  GetModuleFileName(hModule, exe_path, MAX_PATH);
-#else
   PCHECK(readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1) != -1);
-#endif
-#endif
+
   // Make sure it's null-terminated:
   exe_path[sizeof(exe_path) - 1] = 0;
 
@@ -894,16 +875,6 @@ GpuContext* GpuExecutor::gpu_context() { return context_; }
 // turn to gsys' topology modeling.
 static int TryToReadNumaNode(const std::string& pci_bus_id,
                              int device_ordinal) {
-#if defined(__APPLE__)
-  LOG(INFO) << "OS X does not support NUMA - returning NUMA node zero";
-  return 0;
-#elif defined(PLATFORM_WINDOWS)
-  // Windows support for NUMA is not currently implemented. Return node 0.
-  return 0;
-#elif defined(__aarch64__)
-  LOG(INFO) << "ARM64 does not support NUMA - returning NUMA node zero";
-  return 0;
-#else
   VLOG(2) << "trying to read NUMA node for device ordinal: " << device_ordinal;
   static const int kUnknownNumaNode = -1;
 
@@ -951,7 +922,6 @@ static int TryToReadNumaNode(const std::string& pci_bus_id,
 
   fclose(file);
   return kUnknownNumaNode;
-#endif
 }
 
 port::StatusOr<std::unique_ptr<DeviceDescription>>
@@ -1097,4 +1067,4 @@ std::string GpuExecutor::GetPCIBusID(int device_ordinal) {
 
 }  // namespace stream_executor
 
-REGISTER_MODULE_INITIALIZER(cuda_gpu_executor, {});
+//REGISTER_MODULE_INITIALIZER(cuda_gpu_executor, {});

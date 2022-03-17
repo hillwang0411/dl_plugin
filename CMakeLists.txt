@@ -40,14 +40,20 @@ include(cmake/Modules/CUDA.cmake)
 
 include_directories(SYSTEM ${Tensorflow_INCLUDE_DIRS})
 include_directories("${PROJECT_SOURCE_DIR}/")
-#file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/pluggable_device.cc
-#                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/stream_executor_dlgpu.cc
-#                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_platform.cc
-#                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_gpu_executor.cc)
-file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/*.cc)
+file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/pluggable_device.cc
+                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/stream_executor_dlgpu.cc
+                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_platform.cc
+                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_gpu_executor.cc)
+#file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/*.cc)
+#list(REMOVE_ITEM dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cudnn_version_test.cc
+#                                    ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/redzone_allocator_test.cc
+#                                    ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/memcpy_test.cc
+#                                    ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_driver_test.cc)
+
 add_library(dl_plugin ${dl_plugin_files})
 
 # treat warnings as errors
 #target_compile_options(dl_plugin PRIVATE -Werror)
+target_compile_options(dl_plugin PRIVATE ${Tensorflow_COMPILE_FLAGS})
 
 target_link_libraries(dl_plugin ${Tensorflow_LIBRARIES})
