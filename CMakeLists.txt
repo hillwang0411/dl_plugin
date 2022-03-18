@@ -23,7 +23,7 @@ plugin_option(USE_CUDA "Build with CUDA" ON)
 plugin_option(USE_CUDNN "Build with cuDNN" ON)
 
 #3rdparty libraries
-plugin_option(ABSL_PATH "PATH to ABSL" "3rdparty/absl")
+#plugin_option(ABSL_PATH "PATH to ABSL" "3rdparty/absl")
 
 set(DLPLUGIN_LINKER_LIBS "")
 
@@ -53,30 +53,36 @@ include(cmake/Modules/CUDA.cmake)
 # include_directories
 include_directories("${PROJECT_SOURCE_DIR}/")
 include_directories(SYSTEM ${Tensorflow_INCLUDE_DIRS})
-include_directories(${ABSL_PATH})
+#include_directories(${ABSL_PATH})
 
 # third party
 set(ABSL_PROPAGATE_CXX_STD ON)
 set(ABSL_ENABLE_INSTALL ON)
-add_subdirectory(3rdparty/absl)
-add_subdirectory(stream_executor)
+add_subdirectory(3rdparty)
+#add_subdirectory(stream_executor)
 
-#file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/pluggable_device.cc
-#                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/stream_executor_dlgpu.cc
-#                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_platform.cc
-#                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_gpu_executor.cc)
+file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/pluggable_device.cc
+                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/stream_executor_dlgpu.cc
+                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_platform.cc
+                                  ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_gpu_executor.cc)
 ##file(GLOB_RECURSE dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/*.cc)
 ##list(REMOVE_ITEM dl_plugin_files ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cudnn_version_test.cc
 ##                                    ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/redzone_allocator_test.cc
 ##                                    ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/memcpy_test.cc
 ##                                    ${CMAKE_CURRENT_SOURCE_DIR}/stream_executor/cuda/cuda_driver_test.cc)
 #
-#add_library(dl_plugin ${dl_plugin_files})
-#
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+add_library(dl_plugin ${dl_plugin_files})
+
+set_target_properties(dl_plugin PROPERTIES
+IMPORTED_LOCATION ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}absl${CMAKE_STATIC_LIBRARY_SUFFIX}
+INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_INSTALL_PREFIX}/include)
 ## treat warnings as errors
 ##target_compile_options(dl_plugin PRIVATE -Werror)
-#target_compile_options(dl_plugin PRIVATE ${Tensorflow_COMPILE_FLAGS})
+target_compile_options(dl_plugin PRIVATE ${Tensorflow_COMPILE_FLAGS})
 #
 #list(APPEND DLPLUGIN_LINKER_LIBS abslstrings)
 #
-#target_link_libraries(dl_plugin ${Tensorflow_LIBRARIES} ${DLPLUGIN_LINKER_LIBS})
+add_dependencies(dl_plugin absl)  # externalproject won't download without this
+#target_link_libraries(dl_plugin PRIVATE absl)
+target_link_libraries(dl_plugin ${Tensorflow_LIBRARIES} ${DLPLUGIN_LINKER_LIBS})
