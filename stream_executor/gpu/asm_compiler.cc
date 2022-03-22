@@ -68,16 +68,17 @@ static void WarnIfBadPtxasVersion(const std::string& ptxas_path) {
 
   int64 vmaj, vmin, vdot;
   std::string vmaj_str, vmin_str, vdot_str;
-  if (!RE2::PartialMatch(out, R"(\bV(\d+)\.(\d+)\.(\d+)\b)", &vmaj_str,
-                         &vmin_str, &vdot_str) ||
-      !absl::SimpleAtoi(vmaj_str, &vmaj) ||
-      !absl::SimpleAtoi(vmin_str, &vmin) ||
-      !absl::SimpleAtoi(vdot_str, &vdot)) {
-    LOG(WARNING) << "Couldn't parse ptxas version in output of " << ptxas_path
-                 << " --version:\n"
-                 << out;
-    return;
-  }
+// TODO: for link symbol
+//  if (!RE2::PartialMatch(out, R"(\bV(\d+)\.(\d+)\.(\d+)\b)", &vmaj_str,
+//                         &vmin_str, &vdot_str) ||
+//      !absl::SimpleAtoi(vmaj_str, &vmaj) ||
+//      !absl::SimpleAtoi(vmin_str, &vmin) ||
+//      !absl::SimpleAtoi(vdot_str, &vdot)) {
+//    LOG(WARNING) << "Couldn't parse ptxas version in output of " << ptxas_path
+//                 << " --version:\n"
+//                 << out;
+//    return;
+//  }
 
   // We need ptxas >= 9.0 as a hard requirement, because we compile targeting
   // PTX 6.0.  An older ptxas will just fail to compile any of our code.
