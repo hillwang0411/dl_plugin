@@ -13,15 +13,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 #include "stream_executor_dlgpu.h"
+
+#include "stream_executor/cuda/cuda_driver.h"
 #include "stream_executor/cuda/cuda_platform.h"
 
 #include "tensorflow/c/experimental/stream_executor/stream_executor.h"
 #include "tensorflow/core/platform/logging.h"
 #include "tensorflow/stream_executor/lib/error.h"
+#include "tensorflow/stream_executor/lib/human_readable.h"
 #include "tensorflow/stream_executor/stream_executor_pimpl.h"
 
 namespace stream_executor {
 namespace dlgpu {
+
+// Formats CUresult to output prettified values into a log stream.
+std::string ToString(CUresult result) {
+  const char* error_name;
+  if (cuGetErrorName(result, &error_name)) {
+    return absl::StrCat("UNKNOWN ERROR (", static_cast<int>(result), ")");
+  }
+  const char* error_string;
+  if (cuGetErrorString(result, &error_string)) {
+    return error_name;
+  }
+  return absl::StrCat(error_name, ": ", error_string);
+}
+
 
 /*** Init dlgpu platform ***/
 DLGpuPlugin::DLGpuPlugin()
@@ -30,11 +47,46 @@ DLGpuPlugin::DLGpuPlugin()
 /*** Functions for creating SP_StreamExecutor ***/
 void Allocate(const SP_Device* const device, uint64_t size,
               int64_t memory_space, SP_DeviceMemoryBase* const mem) {
+
 //  auto executor = reinterpret_cast<stream_executor::StreamExecutor*>(device->device_handle);
 //  auto buf = executor->Allocate(size, 0/*memory_space*/);
 //  mem->opaque = buf.opaque();
 //  mem->size = size;
 //  mem->payload = 0;
+
+// CHECK_EQ(memory_space, 0); TODO(chuan.zhou): CHECK_EQ depends on tensorflow logging, resolve this later.
+  mem->struct_size = SP_DEVICE_MEMORY_BASE_STRUCT_SIZE;
+  mem->opaque = nullptr;
+  mem->size = 0;
+  mem->payload = 0;
+
+  if (size == 0) {
+    return;
+  }
+
+  auto executor = reinterpret_cast<GpuExecutor*>(device->device_handle);
+  auto context = executor->gpu_context();
+
+  ScopedActivateContext activated{context};
+  CUdeviceptr result = 0;
+  CUresult res = cuMemAlloc(&result, size);
+  if (res != CUDA_SUCCESS) {
+    // LOG(INFO) because this isn't always important to users (e.g. BFCAllocator
+    // implements a retry if the first allocation fails).
+    LOG(INFO) << "failed to allocate "
+    << port::HumanReadableNumBytes::ToString(size) << " (" << size
+    << " bytes) from device: " << ToString(res);
+    return;
+  }
+
+  void* ptr = reinterpret_cast<void*>(result);
+  VLOG(2) << "allocated " << ptr << " for context " << context->context()
+  << " of " << size << " bytes";
+
+  mem->struct_size = SP_DEVICE_MEMORY_BASE_STRUCT_SIZE;
+  mem->opaque = ptr;
+  mem->size = size;
+  mem->payload = 0;
 }
 void Deallocate(const SP_Device* const device, SP_DeviceMemoryBase* const mem) {
 }
