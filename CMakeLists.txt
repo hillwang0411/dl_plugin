@@ -45,6 +45,9 @@ find_package(Tensorflow "2.5.0" REQUIRED)
 if(NOT TENSORFLOW_FOUND)
     return()
 endif()
+message(STATUS "Tensorflow_CXX11 ${Tensorflow_CXX11}")
+message(STATUS "Tensorflow_LIBRARIES ${Tensorflow_LIBRARIES}")
+message(STATUS "Tensorflow_COMPILE_FLAGS ${Tensorflow_COMPILE_FLAGS}")
 
 #CUDA CUDNN
 include(cmake/Modules/CUDA.cmake)
@@ -81,6 +84,8 @@ set_property(TARGET dl_plugin PROPERTY POSITION_INDEPENDENT_CODE ON)
 ## treat warnings as errors
 ##target_compile_options(dl_plugin PRIVATE -Werror)
 target_compile_options(dl_plugin PRIVATE ${Tensorflow_COMPILE_FLAGS})
+set(CMAKE_CXX_FLAGS "${Tensorflow_COMPILE_FLAGS} -std=c++14 -fPIC -Wformat -Wformat-security -D_FORTIFY_SOURCE=2 -fstack-protector-strong -std=c++11 -Wall -Wno-comment -Wno-sign-compare -march=native -DNDEBUG")
+set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
 #
 #list(APPEND DLPLUGIN_LINKER_LIBS abslstrings)
 #

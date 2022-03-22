@@ -151,6 +151,8 @@ int CudaPlatform::VisibleDeviceCount() const {
 
 const std::string& CudaPlatform::Name() const { return name_; }
 
+const std::string& CudaPlatform::Vendor() const { return vendor_; }
+
 port::StatusOr<std::unique_ptr<DeviceDescription>>
 CudaPlatform::DescriptionForDevice(int ordinal) const {
   return GpuExecutor::CreateDeviceDescription(ordinal);
