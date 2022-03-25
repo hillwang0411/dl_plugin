@@ -491,9 +491,10 @@ int GpuExecutor::CompareOccupancy(int* initial_blocks,
   }
 }
 
-DeviceMemoryBase GpuExecutor::Allocate(uint64 size, int64 memory_space) {
+void* GpuExecutor::Allocate(uint64 size, int64 memory_space) {
   CHECK_EQ(memory_space, 0);
-  return DeviceMemoryBase(GpuDriver::DeviceAllocate(context_, size), size);
+
+  return GpuDriver::DeviceAllocate(context_, size);
 }
 
 void* GpuExecutor::GetSubBuffer(DeviceMemoryBase* mem, uint64 offset_bytes,
@@ -720,6 +721,7 @@ port::Status GpuExecutor::BlockHostUntilDone(Stream* stream) {
   return GpuDriver::SynchronizeStream(context_, AsGpuStreamValue(stream));
 }
 
+/*
 blas::BlasSupport* GpuExecutor::CreateBlas() {
   PluginRegistry* registry = PluginRegistry::Instance();
   port::StatusOr<PluginRegistry::BlasFactory> status =
@@ -779,6 +781,9 @@ rng::RngSupport* GpuExecutor::CreateRng() {
 // TODO(rspringer): Remove in b/18544742.
 bool GpuExecutor::SupportsDnn() const { return true; }
 
+*/
+/*
+
 bool GpuExecutor::CanEnablePeerAccessTo(StreamExecutorInterface* other) {
   GpuExecutor* cuda_other = static_cast<GpuExecutor*>(other);
   return GpuDriver::CanEnablePeerAccess(context_, cuda_other->context_);
@@ -788,6 +793,7 @@ port::Status GpuExecutor::EnablePeerAccessTo(StreamExecutorInterface* other) {
   GpuExecutor* cuda_other = static_cast<GpuExecutor*>(other);
   return GpuDriver::EnablePeerAccess(context_, cuda_other->context_);
 }
+*/
 
 bool GpuExecutor::DeviceMemoryUsage(int64* free, int64* total) const {
   return GpuDriver::GetDeviceMemoryInfo(context_, free, total);
@@ -837,7 +843,7 @@ bool FillBlockDimLimit(GpuDeviceHandle device, BlockDim* block_dim_limit) {
   block_dim_limit->z = z;
   return true;
 }
-
+/*
 bool GpuExecutor::SupportsBlas() const { return true; }
 
 bool GpuExecutor::SupportsFft() const { return true; }
@@ -863,6 +869,7 @@ std::unique_ptr<internal::TimerInterface>
 GpuExecutor::GetTimerImplementation() {
   return std::unique_ptr<internal::TimerInterface>(new GpuTimer(this));
 }
+*/
 
 void* GpuExecutor::GpuContextHack() { return context_; }
 

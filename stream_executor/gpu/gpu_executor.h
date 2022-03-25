@@ -34,17 +34,17 @@ limitations under the License.
 #include "stream_executor/gpu/gpu_kernel.h"
 #include "tensorflow/stream_executor/lib/status.h"
 #include "tensorflow/stream_executor/lib/statusor.h"
-#include "tensorflow/stream_executor/platform.h"
-#include "tensorflow/stream_executor/platform/port.h"
-#include "tensorflow/stream_executor/stream_executor_internal.h"
-#include "tensorflow/stream_executor/stream_executor_pimpl.h"
+//#include "tensorflow/stream_executor/platform.h"
+//#include "tensorflow/stream_executor/platform/port.h"
+//#include "tensorflow/stream_executor/stream_executor_internal.h"
+//#include "tensorflow/stream_executor/stream_executor_pimpl.h"
 
 namespace stream_executor {
 
 class StreamExecutor;
 
 namespace dlgpu {
-
+/*
 // Pointer-to-implementation object type with virtual destruction for any XLA
 // specific data hanging off of the GpuExecutor.
 class XLAInterface {
@@ -54,14 +54,14 @@ class XLAInterface {
 
   // Default destructor for the abstract interface.
   virtual ~XLAInterface() {}
-};
+};*/
 
 // CUDA-platform implementation of the platform-agnostic
 // StreamExecutorInterface.
-class GpuExecutor : public internal::StreamExecutorInterface {
+class GpuExecutor {
   // Helper classes to attach a type erased state to the GpuExecutor. Currently,
   // we just need to support some XLA specific state.
-  class Object {
+  /*class Object {
     struct Concept {
       virtual ~Concept() {}
     };
@@ -84,7 +84,7 @@ class GpuExecutor : public internal::StreamExecutorInterface {
    private:
     tensorflow::mutex mu_;
     std::unique_ptr<Concept> object_ ABSL_GUARDED_BY(mu_);
-  };
+  };*/
 
  public:
   // sub_platform indicates the subplatform used in this executor; it must
@@ -101,21 +101,21 @@ class GpuExecutor : public internal::StreamExecutorInterface {
   // See the corresponding StreamExecutor methods for method comments on the
   // following overrides.
 
-  ~GpuExecutor() override;
+  ~GpuExecutor();
 
-  port::Status Init(int device_ordinal, DeviceOptions device_options) override;
+  port::Status Init(int device_ordinal, DeviceOptions device_options);
 
   port::Status GetKernel(const MultiKernelLoaderSpec& spec,
-                         KernelBase* kernel) override;
+                         KernelBase* kernel);
   // (supported on CUDA only)
-  void UnloadKernel(const KernelBase* kernel) override;
+  void UnloadKernel(const KernelBase* kernel);
   port::Status LoadModule(const MultiModuleLoaderSpec& spec,
-                          ModuleHandle* module_handle) override;
-  bool UnloadModule(ModuleHandle module_handle) override;
+                          ModuleHandle* module_handle);
+  bool UnloadModule(ModuleHandle module_handle);
 
   port::Status Launch(Stream* stream, const ThreadDim& thread_dims,
                       const BlockDim& block_dims, const KernelBase& k,
-                      const KernelArgsArrayBase& args) override;
+                      const KernelArgsArrayBase& args);
 
   // (supported on CUDA only)
   int CalculateOccupancy(const DeviceDescription& device_description,
@@ -130,18 +130,18 @@ class GpuExecutor : public internal::StreamExecutorInterface {
                        uint64 shared_memory_per_block,
                        const ThreadDim& thread_dims, GpuFunctionHandle func);
 
-  DeviceMemoryBase Allocate(uint64 size, int64 memory_space) override;
+  void* Allocate(uint64 size, int64 memory_space);
 
   void* GetSubBuffer(DeviceMemoryBase* mem, uint64 offset_bytes,
-                     uint64 size_bytes) override;
+                     uint64 size_bytes);
 
-  void Deallocate(DeviceMemoryBase* mem) override;
+  void Deallocate(DeviceMemoryBase* mem);
 
-  void* UnifiedMemoryAllocate(uint64 size) override {
+  void* UnifiedMemoryAllocate(uint64 size) {
     return GpuDriver::UnifiedMemoryAllocate(context_, size);
   }
 
-  void UnifiedMemoryDeallocate(void* location) override {
+  void UnifiedMemoryDeallocate(void* location) {
     return GpuDriver::UnifiedMemoryDeallocate(context_, location);
   }
 
@@ -149,131 +149,133 @@ class GpuExecutor : public internal::StreamExecutorInterface {
   // internally sets up buffers for DMA operations (and page locks them).
   // There's no external interface for us to otherwise control these DMA
   // settings.
-  void* HostMemoryAllocate(uint64 size) override {
+  void* HostMemoryAllocate(uint64 size) {
     return GpuDriver::HostAllocate(context_, size);
   }
 
-  void HostMemoryDeallocate(void* location) override {
+  void HostMemoryDeallocate(void* location) {
     return GpuDriver::HostDeallocate(context_, location);
   }
 
-  bool HostMemoryRegister(void* location, uint64 size) override;
+  bool HostMemoryRegister(void* location, uint64 size);
 
-  bool HostMemoryUnregister(void* location) override;
+  bool HostMemoryUnregister(void* location);
 
-  bool SynchronizeAllActivity() override;
+  bool SynchronizeAllActivity();
 
   port::Status SynchronousMemZero(DeviceMemoryBase* location,
-                                  uint64 size) override;
+                                  uint64 size);
 
   port::Status SynchronousMemSet(DeviceMemoryBase* location, int value,
-                                 uint64 size) override;
+                                 uint64 size);
 
   port::Status SynchronousMemcpy(DeviceMemoryBase* gpu_dst,
-                                 const void* host_src, uint64 size) override;
+                                 const void* host_src, uint64 size);
 
   port::Status SynchronousMemcpy(void* host_dst,
                                  const DeviceMemoryBase& gpu_src,
-                                 uint64 size) override;
+                                 uint64 size);
 
   port::Status SynchronousMemcpyDeviceToDevice(DeviceMemoryBase* gpu_dst,
                                                const DeviceMemoryBase& gpu_src,
-                                               uint64 size) override;
+                                               uint64 size);
 
   port::Status MemZero(Stream* stream, DeviceMemoryBase* location,
-                       uint64 size) override;
+                       uint64 size);
   port::Status Memset(Stream* stream, DeviceMemoryBase* location, uint8 pattern,
-                      uint64 size) override;
+                      uint64 size);
   port::Status Memset32(Stream* stream, DeviceMemoryBase* location,
-                        uint32 pattern, uint64 size) override;
+                        uint32 pattern, uint64 size);
 
   bool Memcpy(Stream* stream, void* host_dst, const DeviceMemoryBase& gpu_src,
-              uint64 size) override;
+              uint64 size);
 
   bool Memcpy(Stream* stream, DeviceMemoryBase* gpu_dst, const void* host_src,
-              uint64 size) override;
+              uint64 size);
 
   bool MemcpyDeviceToDevice(Stream* stream, DeviceMemoryBase* gpu_dst,
                             const DeviceMemoryBase& gpu_src,
-                            uint64 size) override;
+                            uint64 size);
 
   bool HostCallback(Stream* stream,
-                    std::function<port::Status()> callback) override;
+                    std::function<port::Status()> callback);
 
-  bool AllocateStream(Stream* stream) override;
+  bool AllocateStream(Stream* stream);
 
-  void DeallocateStream(Stream* stream) override;
+  void DeallocateStream(Stream* stream);
 
-  bool CreateStreamDependency(Stream* dependent, Stream* other) override;
+  bool CreateStreamDependency(Stream* dependent, Stream* other);
 
-  bool AllocateTimer(Timer* timer) override;
+  bool AllocateTimer(Timer* timer);
 
-  void DeallocateTimer(Timer* timer) override;
+  void DeallocateTimer(Timer* timer);
 
-  bool StartTimer(Stream* stream, Timer* timer) override;
+  bool StartTimer(Stream* stream, Timer* timer);
 
-  bool StopTimer(Stream* stream, Timer* timer) override;
+  bool StopTimer(Stream* stream, Timer* timer);
 
-  port::Status AllocateEvent(Event* event) override;
+  port::Status AllocateEvent(Event* event);
 
-  port::Status DeallocateEvent(Event* event) override;
+  port::Status DeallocateEvent(Event* event);
 
-  port::Status RecordEvent(Stream* stream, Event* event) override;
+  port::Status RecordEvent(Stream* stream, Event* event);
 
-  port::Status WaitForEvent(Stream* stream, Event* event) override;
+  port::Status WaitForEvent(Stream* stream, Event* event);
 
-  Event::Status PollForEventStatus(Event* event) override;
+  Event::Status PollForEventStatus(Event* event);
 
-  port::Status BlockHostUntilDone(Stream* stream) override;
+  port::Status BlockHostUntilDone(Stream* stream);
 
-  int PlatformDeviceCount() override { return GpuDriver::GetDeviceCount(); }
+  int PlatformDeviceCount() { return GpuDriver::GetDeviceCount(); }
 
-  port::Status EnablePeerAccessTo(StreamExecutorInterface* other) override;
+//  port::Status EnablePeerAccessTo(StreamExecutorInterface* other);
 
-  bool CanEnablePeerAccessTo(StreamExecutorInterface* other) override;
+//  bool CanEnablePeerAccessTo(StreamExecutorInterface* other);
 
-  bool DeviceMemoryUsage(int64* free, int64* total) const override;
+  bool DeviceMemoryUsage(int64* free, int64* total) const;
 
   // Search for the symbol and returns a device pointer and size.
   // Returns false if symbol does not exist.
   bool GetSymbol(const std::string& symbol_name, ModuleHandle module_handle,
-                 void** mem, size_t* bytes) override;
+                 void** mem, size_t* bytes);
 
   port::StatusOr<std::unique_ptr<DeviceDescription>> CreateDeviceDescription()
-      const override {
+      const {
     return CreateDeviceDescription(device_ordinal_);
   }
 
   static port::StatusOr<std::unique_ptr<DeviceDescription>>
   CreateDeviceDescription(int device_ordinal);
 
-  bool SupportsBlas() const override;
+/*  bool SupportsBlas() const;
 
-  blas::BlasSupport* CreateBlas() override;
+  blas::BlasSupport* CreateBlas();
 
-  bool SupportsFft() const override;
+  bool SupportsFft() const;
 
-  fft::FftSupport* CreateFft() override;
+  fft::FftSupport* CreateFft();
 
-  bool SupportsRng() const override;
+  bool SupportsRng() const;
 
-  rng::RngSupport* CreateRng() override;
+  rng::RngSupport* CreateRng();
 
-  bool SupportsDnn() const override;
+  bool SupportsDnn() const;
 
-  dnn::DnnSupport* CreateDnn() override;
+  dnn::DnnSupport* CreateDnn();*/
 
+/*
   std::unique_ptr<internal::EventInterface> CreateEventImplementation()
       override;
 
   std::unique_ptr<internal::KernelInterface> CreateKernelImplementation()
       override;
 
-  std::unique_ptr<internal::StreamInterface> GetStreamImplementation() override;
+  std::unique_ptr<internal::StreamInterface> GetStreamImplementation();
 
-  std::unique_ptr<internal::TimerInterface> GetTimerImplementation() override;
+  std::unique_ptr<internal::TimerInterface> GetTimerImplementation();
+*/
 
-  void* GpuContextHack() override;
+  void* GpuContextHack();
 
   GpuContext* gpu_context();
 
@@ -286,10 +288,10 @@ class GpuExecutor : public internal::StreamExecutorInterface {
   // and then either leaking or having to implement callbacks that the SE
   // destructors call to deallocate any side state that is associated with that
   // SE object.
-  template <typename T>
+/*  template <typename T>
   T* getOrCreateXLAState(StreamExecutor* se) {
     return xla_state_.getOrCreate<T>(se);
-  }
+  }*/
 
   // TODO:Add new interface here.
   std::string GetPCIBusID(int device_ordinal);
@@ -399,7 +401,7 @@ class GpuExecutor : public internal::StreamExecutorInterface {
   PluginConfig plugin_config_;
 
   // Type erased XLA specific state attached to GpuExecutor.
-  Object xla_state_;
+//  Object xla_state_;
 
   // TODO: add member here
   std::string pci_bus_id_;
@@ -407,9 +409,11 @@ class GpuExecutor : public internal::StreamExecutorInterface {
   SE_DISALLOW_COPY_AND_ASSIGN(GpuExecutor);
 };
 
+/*
 inline GpuExecutor* ExtractGpuExecutor(StreamExecutor* stream_exec) {
   return static_cast<GpuExecutor*>(stream_exec->implementation());
 }
+*/
 
 }  // namespace dlgpu
 }  // namespace stream_executor

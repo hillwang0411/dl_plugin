@@ -30,9 +30,9 @@ ScopedActivateExecutorContext::ScopedActivateExecutorContext(
     : driver_scoped_activate_context_(
           new ScopedActivateContext{ExtractGpuContext(gpu_exec)}) {}
 
-ScopedActivateExecutorContext::ScopedActivateExecutorContext(
+/*ScopedActivateExecutorContext::ScopedActivateExecutorContext(
     StreamExecutor* stream_exec)
-    : ScopedActivateExecutorContext(ExtractGpuExecutor(stream_exec)) {}
+    : ScopedActivateExecutorContext(ExtractGpuExecutor(stream_exec)) {}*/
 
 ScopedActivateExecutorContext::~ScopedActivateExecutorContext() {
   delete static_cast<ScopedActivateContext*>(driver_scoped_activate_context_);
