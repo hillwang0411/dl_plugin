@@ -1,0 +1,17 @@
+build --action_env PYTHON_BIN_PATH="/usr/bin/python"
+build --action_env PYTHON_LIB_PATH="/home/denglinai/.local/lib/python3.6/site-packages"
+build --python_path="/usr/bin/python"
+build --action_env TF_HEADER_DIR="/home/denglinai/.local/lib/python3.6/site-packages/tensorflow/include"
+build --action_env TF_SHARED_LIBRARY_DIR="/home/denglinai/.local/lib/python3.6/site-packages/tensorflow/"
+build --action_env TF_CXX11_ABI_FLAG="1"
+build --action_env PYTHON_LINK_LIB_NAME="python3.6m"
+build --action_env PYTHON_LINK_PATH="/usr/lib"
+build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda-10.0"
+build --action_env TF_CUDA_COMPUTE_CAPABILITIES="8.6"
+build --action_env LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/lib:"
+build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/gcc"
+build --config=cuda
+build:opt --copt=-march=native
+build:opt --copt=-Wno-sign-compare
+build:opt --host_copt=-march=native
+build:opt --define with_default_optimizations=true
